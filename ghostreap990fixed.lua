@@ -36,7 +36,7 @@ end
 local function showKeyPrompt()
     local inputKey = Instance.new("TextBox")
     inputKey.Name = "KeyBox"
-    inputKey.Parent = player.PlayerGui
+    inputKey.Parent = game.CoreGui
     inputKey.PlaceholderText = "Enter Key"
     inputKey.Size = UDim2.new(0, 200, 0, 50)
     inputKey.Position = UDim2.new(0.5, -100, 0.5, -25)
