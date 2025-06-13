@@ -1,14 +1,15 @@
--- GhostReap990 Hub | Created by ReapsReality990 | 2025
--- Private-use only. Leaks = instant deauthorization.
+-- GhostReap990 Hub | Created by ReapsReality990 & Project Partner | 2025
+-- Unauthorized distribution or leaks will result in immediate deauthorization. Private-use only.
 
 local player = game.Players.LocalPlayer
 local key = "reapsreality990key8"
 
--- GUI Setup
+repeat task.wait() until game:IsLoaded() and player.Character and player:FindFirstChild("PlayerGui")
+
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "GhostReap990Hub"
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.CoreGui
-ScreenGui.Enabled = false
 
 local Frame = Instance.new("Frame")
 Frame.Size = UDim2.new(0, 500, 0, 350)
@@ -17,7 +18,6 @@ Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.Parent = ScreenGui
 Frame.Visible = false
 
--- Ear Rape Function
 local function earRape()
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxassetid://9118828565"
@@ -28,43 +28,40 @@ local function earRape()
     sound:Destroy()
 end
 
--- Unlock Hub Function
 local function unlockHub()
-    ScreenGui.Enabled = true
     Frame.Visible = true
     earRape()
 end
 
--- Auto Key Prompt on Load
-local function showKeyPrompt()
-    local inputKey = Instance.new("TextBox")
-    inputKey.Name = "KeyBox"
-    inputKey.Parent = player.PlayerGui
-    inputKey.PlaceholderText = "Enter Key"
-    inputKey.Size = UDim2.new(0, 200, 0, 50)
-    inputKey.Position = UDim2.new(0.5, -100, 0.5, -25)
-    inputKey.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    inputKey.TextColor3 = Color3.fromRGB(255, 255, 255)
-    inputKey.Text = ""
-    inputKey.ClearTextOnFocus = true
+-- Show KeyBox immediately
+local inputKey = Instance.new("TextBox")
+inputKey.Name = "KeyBox"
+inputKey.Parent = ScreenGui
+inputKey.PlaceholderText = "Enter Key"
+inputKey.Size = UDim2.new(0, 200, 0, 50)
+inputKey.Position = UDim2.new(0.5, -100, 0.5, -25)
+inputKey.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+inputKey.TextColor3 = Color3.fromRGB(255, 255, 255)
+inputKey.Font = Enum.Font.SourceSansBold
+inputKey.TextSize = 22
+inputKey.Text = ""
+inputKey.ClearTextOnFocus = true
 
-    inputKey.FocusLost:Connect(function()
-        if inputKey.Text == key then
-            unlockHub()
-            inputKey:Destroy()
-        else
-            inputKey.Text = "Invalid Key"
-            task.wait(1)
-            inputKey:Destroy()
-            showKeyPrompt() -- reopen after invalid
-        end
-    end)
-    inputKey:CaptureFocus()
-end
+inputKey.FocusLost:Connect(function()
+    if inputKey.Text == key then
+        unlockHub()
+        inputKey:Destroy()
+    else
+        inputKey.Text = "Invalid Key"
+        task.wait(1)
+        inputKey.Text = ""
+        inputKey:CaptureFocus()
+    end
+end)
 
-showKeyPrompt()
+inputKey:CaptureFocus()
 
--- Pill Toggle Creator
+-- Features setup
 local function createPillToggle(name, posY, callback)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 250, 0, 40)
@@ -84,14 +81,13 @@ local function createPillToggle(name, posY, callback)
     end)
 end
 
--- Kill Aura
 local function killAuraFunc(state)
     if state then
         spawn(function()
             while state and task.wait(0.1) do
                 for _, v in pairs(game.Players:GetPlayers()) do
                     if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-                        game.ReplicatedStorage.Remotes.Damage:FireServer(v)
+                        game:GetService("ReplicatedStorage").Remotes.Damage:FireServer(v)
                     end
                 end
             end
@@ -99,36 +95,32 @@ local function killAuraFunc(state)
     end
 end
 
--- Lag Spike
 local function lagSpikeFunc(state)
     if state then
         spawn(function()
             while state and task.wait(0.01) do
-                game.ReplicatedStorage.RemoteEvent:FireServer(math.random(), math.random())
+                game:GetService("ReplicatedStorage").RemoteEvent:FireServer(math.random(), math.random())
             end
         end)
     end
 end
 
--- Godmode
 local function godmodeFunc(state)
     if state and player.Character and player.Character:FindFirstChild("Humanoid") then
         player.Character.Humanoid.Name = "Bypass"
     end
 end
 
--- Phantom Escape
 local function phantomFunc(state)
     if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
         player.Character.HumanoidRootPart.Anchored = state
     end
 end
 
--- Remote Blocker
 local blockerConnection
 local function blockerFunc(state)
     if state then
-        blockerConnection = game.ReplicatedStorage.ChildAdded:Connect(function(child)
+        blockerConnection = game:GetService("ReplicatedStorage").ChildAdded:Connect(function(child)
             if child:IsA("RemoteEvent") then child:Destroy() end
         end)
     elseif blockerConnection then
@@ -136,14 +128,12 @@ local function blockerFunc(state)
     end
 end
 
--- Build GUI Interactables
 createPillToggle("Kill Aura", 10, killAuraFunc)
 createPillToggle("Lag Spike", 60, lagSpikeFunc)
 createPillToggle("Godmode", 110, godmodeFunc)
 createPillToggle("Phantom Escape", 160, phantomFunc)
 createPillToggle("Remote Blocker", 210, blockerFunc)
 
--- Command Bar
 local cmdBar = Instance.new("TextBox")
 cmdBar.Size = UDim2.new(0, 400, 0, 40)
 cmdBar.Position = UDim2.new(0, 50, 0, 300)
@@ -166,19 +156,3 @@ cmdBar.FocusLost:Connect(function()
     end
     cmdBar.Text = ""
 end)
-
--- Log System
-local log = {}
-local function logError(msg)
-    table.insert(log, "[ERROR] "..msg)
-    warn("[ERROR] "..msg)
-end
-local function printLogs()
-    for _, v in pairs(log) do
-        print(v)
-    end
-end
-
--- Startup Notices
-print("GhostReap990 Hub | Created by ReapsReality990 | 2025")
-print("Unauthorized distribution or leaks will result in immediate deauthorization. Private-use only.")
