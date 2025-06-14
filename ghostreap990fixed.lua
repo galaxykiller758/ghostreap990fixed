@@ -1,5 +1,5 @@
 --[[
-  GhostReap990 Hub - Final Full Code (Fixed)
+  GhostReap990 Hub - Clean Build (No Sound)
   All requested features integrated, cleaned, and tested.
   Nova Red Theme | Phantasm-Style Pill Toggles | Key System Obfuscated
   Ready for repo drop as loadstring-compatible script.
@@ -15,28 +15,11 @@ local UserInputService = game:GetService("UserInputService")
 -- Player reference
 local localPlayer = Players.LocalPlayer
 
--- Base64 Decoder (Pure Lua)
-local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-function base64Decode(data)
-    data = string.gsub(data, '[^'..b..'=]', '')
-    return (data:gsub('.', function(x)
-        if (x == '=') then return '' end
-        local r,f='',(b:find(x)-1)
-        for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
-        return r;
-    end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
-        if (#x ~= 8) then return '' end
-        local c=0
-        for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
-        return string.char(c)
-    end))
-end
-
 -- Obfuscated Key System (reconstructs key from parts)
 local partA = "cmVhcHNy"
 local partB = "ZWFsaXR5"
 local partC = "OTkwa2V5OA=="
-local finalKey = base64Decode(partA..partB..partC)
+local finalKey = game:GetService("HttpService"):Base64Decode(partA..partB..partC)
 
 -- GUI Setup
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -54,11 +37,6 @@ mainFrame.Position = UDim2.new(0.5, -225, 0.5, -150)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.Visible = false
-
--- Ear Rape Sound
-local earRapeSound = Instance.new("Sound", game.SoundService)
-earRapeSound.SoundId = "rbxassetid://9129993130"
-earRapeSound.Volume = 10
 
 -- Key Prompt
 local keyBox = Instance.new("TextBox", ScreenGui)
@@ -92,9 +70,6 @@ keyBox.FocusLost:Connect(function(enter)
         ScreenGui.Enabled = true
         mainFrame.Visible = true
         keyBox.Visible = false
-        earRapeSound:Play()
-        task.wait(3)
-        earRapeSound:Stop()
     end
 end)
 
@@ -125,10 +100,8 @@ closeButton.BackgroundColor3 = novaRed
 closeButton.TextColor3 = Color3.new(1, 1, 1)
 
 closeButton.MouseButton1Click:Connect(function()
-    earRapeSound:Play()
-    task.wait(3)
-    earRapeSound:Stop()
     ScreenGui:Destroy()
 end)
 
--- End of Full Fixed Code
+-- Ready for repo drop or loadstring() wrapping
+-- End of Clean Code
